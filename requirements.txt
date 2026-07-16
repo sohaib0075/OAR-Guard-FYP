@@ -1,0 +1,31 @@
+# Core
+numpy
+scipy
+pandas
+
+# Deep learning
+torch
+torchvision
+monai
+
+# Segmentation
+segment-anything
+
+# Medical imaging I/O
+nibabel
+pydicom
+SimpleITK
+
+# Visualization / dashboard
+matplotlib
+plotly
+streamlit
+
+# Utilities
+tqdm
+pyyaml
+scikit-image
+scikit-learn
+
+# Explainability (if used)
+grad-cam

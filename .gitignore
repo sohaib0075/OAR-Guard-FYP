@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+venv/
+env/
+.venv/
+*.ipynb_checkpoints/
+
+# Data & models (hosted on Google Drive — see data/README.md and models/README.md)
+data/*
+!data/README.md
+models/*
+!models/README.md
+results/*
+!results/.gitkeep
+
+# Medical imaging formats
+*.nii
+*.nii.gz
+*.dcm
+*.mha
+*.mhd
+
+# Model weights / checkpoints
+*.pth
+*.pt
+*.ckpt
+*.h5
+*.onnx
+
+# Logs
+*.log
+runs/
+wandb/
+mlruns/
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+Thumbs.db
+
+# Environment
+.env
