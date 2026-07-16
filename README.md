@@ -49,9 +49,9 @@ Very little work connects the two into a single, patient-specific pipeline that 
 6. **Organ-wise dose statistics** — mean dose, max dose, top-1% dose, fraction above 20 Gy, per organ.
 7. **Risk score computation**:
 
-   ```
+```
    Risk Score = 0.5 × Mean Dose + 0.3 × Max Dose + 0.2 × Top-1% Dose
-   ```
+```
 
 8. **Patient-specific organ ranking** — sorts organs from highest to lowest predicted risk (the "Next Organ at Risk").
 9. **Visual & tabular output generation** — dose heatmaps, top-3 organ summary, risk-score bar charts, full ranking table.
@@ -61,8 +61,8 @@ See [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) for full architectural detail a
 
 ## Tech Stack
 
-- **Segmentation:** MONAI, SAM (Segment Anything Model), SegResNetDS, Vision Transformers
-- **Dose Prediction:** Cascade 3D CNN (C3D), PyTorch
+- **Segmentation:** MONAI, SAM (Segment Anything Model), SegResNetDS, Vision Transformers, CLIP
+- **Dose Prediction:** Cascade 3D CNN (C3D), DCNN, PyTorch
 - **Dataset:** [OpenKBP](https://github.com/ababier/open-kbp) — public head & neck radiotherapy planning dataset
 - **Interface:** Interactive web dashboard (clinician-facing)
 - **Training hardware:** NVIDIA RTX 4060 / RTX 4090
@@ -80,20 +80,19 @@ After downloading, place the contents according to [`data/README.md`](data/READM
 ```
 oar-guard/
 ├── src/
-│   ├── preprocessing/      # CT/MRI loading, normalization, registration
-│   ├── segmentation/       # Tumour + OAR segmentation (MONAI, SAM)
-│   ├── dose_prediction/    # C3D cascade 3D CNN model + training/inference
-│   ├── risk_ranking/       # Dose statistics, risk score, organ ranking
-│   └── visualization/      # Heatmaps, bar charts, ranking tables
-├── dashboard/               # Interactive clinician-facing dashboard app
-├── data/                    # Dataset placeholder — see data/README.md (Drive-hosted)
-├── models/                  # Trained model checkpoints — see models/README.md (Drive-hosted)
-├── notebooks/                # Exploratory / experiment notebooks
-├── results/                  # Generated outputs (heatmaps, tables, exports)
+│   ├── segmentation/
+│   │   ├── tumour/            # Tumour segmentation model + training/inference
+│   │   └── organ_at_risk/     # OAR segmentation (SAM, CLIP, network, training scripts)
+│   └── dose_prediction/       # C3D + DCNN dose prediction models, data loaders, training/eval
+├── dashboard/                  # Interactive clinician-facing dashboard app
+├── data/                       # Dataset placeholder — see data/README.md (Drive-hosted)
+├── models/                     # Trained model checkpoints — see models/README.md (Drive-hosted)
+├── notebooks/                  # Exploratory / experiment notebooks
+├── results/                    # Generated outputs (heatmaps, tables, exports)
 ├── docs/
-│   ├── METHODOLOGY.md       # Full pipeline & architecture writeup
-│   └── RESULTS.md            # Evaluation metrics & results
-├── tests/                    # Unit tests
+│   ├── METHODOLOGY.md         # Full pipeline & architecture writeup
+│   └── RESULTS.md              # Evaluation metrics & results
+├── tests/                       # Unit tests
 ├── requirements.txt
 ├── .gitignore
 └── README.md
@@ -103,8 +102,8 @@ oar-guard/
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/<your-username>/oar-guard.git
-cd oar-guard
+git clone https://github.com/sohaib0075/OAR-Guard-FYP.git
+cd OAR-Guard-FYP
 
 # 2. Create environment
 python -m venv venv
@@ -115,17 +114,16 @@ pip install -r requirements.txt
 #    then place them per data/README.md and models/README.md
 
 # 4. Run the pipeline (example)
-python src/preprocessing/prepare_patient.py --patient pt_339
-python src/segmentation/run_segmentation.py --patient pt_339
-python src/dose_prediction/predict_dose.py --patient pt_339
-python src/risk_ranking/rank_organs.py --patient pt_339
+python src/segmentation/tumour/segmenter.py --patient pt_339
+python src/segmentation/organ_at_risk/inference_demo.py --patient pt_339
+python src/dose_prediction/C3D/test.py --patient pt_339
 
 # 5. Launch the dashboard
 cd dashboard
 python app.py
 ```
 
-> Exact script names/flags above are placeholders — update this section once your actual scripts are in place.
+> Exact script flags above are placeholders — update this section with the real arguments your scripts expect.
 
 ## Evaluation Metrics
 
@@ -161,7 +159,7 @@ Full results are in [`docs/RESULTS.md`](docs/RESULTS.md).
 
 ## References
 
-Full Harvard-style references are listed in the final report ([`docs/REPORT.pdf`](docs/REPORT.pdf), if included, or your submitted PDF).
+Full Harvard-style references are listed in the final report submitted alongside this project.
 
 ## License
 
